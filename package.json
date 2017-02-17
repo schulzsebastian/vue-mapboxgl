@@ -1,0 +1,19 @@
+{
+  "name": "vue-mapboxgl",
+  "version": "1.0.0",
+  "description": "Mapbox GL Component",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/schulzsebastian/vue-mapboxgl.git"
+  },
+  "author": "schulzsebastian",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/schulzsebastian/vue-mapboxgl/issues"
+  },
+  "homepage": "https://github.com/schulzsebastian/vue-mapboxgl#readme"
+}
