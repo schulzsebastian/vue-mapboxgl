@@ -18,9 +18,15 @@
   Vue.component('mapbox-gl', {
     props: ['id', 'layers'],
     template: '<div :id="id" style="height:100%;width:100%"></div>',
+    data: function() {
+      return {
+        currentLayers: []
+      }
+    },
     methods: {
       addLayers: function(){
         let self = this
+        self.removeAllLayers()
         Object.keys(self.layers).forEach(layer_name=>{
           let type
           if(self.layers[layer_name].geometry.type == 'Polygon'){
@@ -30,14 +36,16 @@
           }else if(self.layers[layer_name].geometry.type == 'LineString'){
             type = 'line'
           }
+          self.map.addSource(layer_name,{
+            'type': 'geojson',
+            'data': self.layers[layer_name]
+          })
           self.map.addLayer({
             id: layer_name,
             type: type,
-            source: {
-              type: 'geojson',
-              data: self.layers[layer_name]
-            }
+            source: layer_name
           })
+          self.currentLayers.push(layer_name)
         })
         self.zoomToExtent()
       },
@@ -59,7 +67,19 @@
           }, new mapboxgl.LngLatBounds(coordinates[0], coordinates[0]))
           self.map.fitBounds(bounds, {padding: 20})
         }
-      }
+      },
+      removeLayer: function(layer_name){
+        this.map.removeLayer(layer_name)
+        this.map.removeSource(layer_name)
+        this.currentLayers = this.currentLayers.filter(l=> l !== layer)
+      },
+      removeAllLayers: function(){
+        this.currentLayers.forEach(layer_name=>{
+          this.map.removeLayer(layer_name)
+          this.map.removeSource(layer_name)
+        })
+        this.currentLayers = []
+      },
     },
     mounted: function(){
       let self = this
