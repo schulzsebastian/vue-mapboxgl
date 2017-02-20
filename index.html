@@ -23,22 +23,28 @@
         currentLayers: []
       }
     },
+    watch: {
+      layers: function(){
+        this.addLayers()
+      }
+    },
     methods: {
       addLayers: function(){
         let self = this
         self.removeAllLayers()
-        Object.keys(self.layers).forEach(layer_name=>{
+        self.layers.forEach(layer=>{
           let type
-          if(self.layers[layer_name].geometry.type == 'Polygon'){
+          let layer_name = Object.keys(layer)[0]
+          if(layer[layer_name].geometry.type == 'Polygon'){
             type = 'fill'
-          }else if(self.layers[layer_name].geometry.type == 'Point'){
+          }else if(layer[layer_name].geometry.type == 'Point'){
             type = 'circle'
-          }else if(self.layers[layer_name].geometry.type == 'LineString'){
+          }else if(layer[layer_name].geometry.type == 'LineString'){
             type = 'line'
           }
           self.map.addSource(layer_name,{
             'type': 'geojson',
-            'data': self.layers[layer_name]
+            'data': layer[layer_name]
           })
           self.map.addLayer({
             id: layer_name,
@@ -52,13 +58,14 @@
       zoomToExtent: function(){
         let self = this
         let coordinates = []
-        Object.keys(self.layers).forEach(layer_name=>{
-          if(self.layers[layer_name].geometry.type == 'Polygon'){
-            coordinates = coordinates.concat(self.layers[layer_name].geometry.coordinates[0])
-          }else if(self.layers[layer_name].geometry.type == 'Point'){
-            coordinates = coordinates.concat([self.layers[layer_name].geometry.coordinates])
-          }else if(self.layers[layer_name].geometry.type == 'LineString'){
-            coordinates = coordinates.concat(self.layers[layer_name].geometry.coordinates)
+        self.layers.forEach(layer=>{
+          let layer_name = Object.keys(layer)[0]
+          if(layer[layer_name].geometry.type == 'Polygon'){
+            coordinates = coordinates.concat(layer[layer_name].geometry.coordinates[0])
+          }else if(layer[layer_name].geometry.type == 'Point'){
+            coordinates = coordinates.concat([layer[layer_name].geometry.coordinates])
+          }else if(layer[layer_name].geometry.type == 'LineString'){
+            coordinates = coordinates.concat(layer[layer_name].geometry.coordinates)
           }
         })
         if(coordinates.length > 0){
@@ -97,64 +104,70 @@
   let vm = new Vue({
     el: '#app',
     data: {
-      testData: {
-        warstwa_1: {
-          type: "Feature",
-          properties: {
-            Test: "test",
-            test: "Test"
-          },
-          geometry: {
-            type: "Polygon",
-            coordinates: [[[15.5479602052256,51.294732412547],
-            [15.5492877421656,51.2953793307359],
-            [15.5494309742339,51.2953354154114],
-            [15.5506463435564,51.2943443780262],
-            [15.5509351598214,51.2940758375278],
-            [15.5507815492991,51.2940113790357],
-            [15.5503328328041,51.293790464909],
-            [15.5502871134112,51.2938221402259],
-            [15.5488673124388,51.2948579824926],
-            [15.548803522121,51.2948378337309],
-            [15.5481793528033,51.2945547749402],
-            [15.5479602052256,51.294732412547]]]
-          }
-        },
-        warstwa_2: {
-          type: "Feature",
-          properties: {
-            test: "Test",
-            Test: "test"
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [
-              15.55070858448744,
-              51.29502826533429
-            ]
-          }
-        },
-        warstwa_3: {
-          type: "Feature",
-          properties: {
-            test: "Test",
-            Test: "test"
-          },
-          geometry: {
-            type: "LineString",
-            coordinates: [
-              [
-                15.551223568618298,
-                51.29580648562769
-              ],
-              [
-                15.552017502486704,
-                51.2944915539977
-              ]
-            ]
-          }
+      test: [],
+      testData: [
+        {
+          warstwa_1: {
+            type: "Feature",
+            properties: {
+              Test: "test",
+              test: "Test"
+            },
+            geometry: {
+              type: "Polygon",
+              coordinates: [[[15.5479602052256,51.294732412547],
+              [15.5492877421656,51.2953793307359],
+              [15.5494309742339,51.2953354154114],
+              [15.5506463435564,51.2943443780262],
+              [15.5509351598214,51.2940758375278],
+              [15.5507815492991,51.2940113790357],
+              [15.5503328328041,51.293790464909],
+              [15.5502871134112,51.2938221402259],
+              [15.5488673124388,51.2948579824926],
+              [15.548803522121,51.2948378337309],
+              [15.5481793528033,51.2945547749402],
+              [15.5479602052256,51.294732412547]]]
+            }
         }
-      }
+      },
+      {
+          warstwa_2: {
+            type: "Feature",
+            properties: {
+              test: "Test",
+              Test: "test"
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [
+                15.55070858448744,
+                51.29502826533429
+              ]
+            }
+          }
+      },
+      {
+        warstwa_3: {
+            type: "Feature",
+            properties: {
+              test: "Test",
+              Test: "test"
+            },
+            geometry: {
+              type: "LineString",
+              coordinates: [
+                [
+                  15.551223568618298,
+                  51.29580648562769
+                ],
+                [
+                  15.552017502486704,
+                  51.2944915539977
+                ]
+              ]
+            }
+          }
+        }]
     }
   })
   </script>
